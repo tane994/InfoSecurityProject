@@ -57,9 +57,9 @@ public class NavigationServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 		
-		String email = (String) request.getAttribute("email");
-		String pwd = (String) request.getAttribute("password");
-		
+		String email = request.getParameter("email").replace("'", "''");;
+		String pwd = request.getParameter("password").replace("'", "''");;
+				
 		if (request.getParameter("newMail") != null)
 			request.setAttribute("content", getHtmlForNewMail(email, pwd));
 		else if (request.getParameter("inbox") != null)
@@ -67,6 +67,7 @@ public class NavigationServlet extends HttpServlet {
 		else if (request.getParameter("sent") != null)
 			request.setAttribute("content", getHtmlForSent(email));
 		
+		request.setAttribute("email", email);
 		request.getRequestDispatcher("home.jsp").forward(request, response);
 	}
 
@@ -82,11 +83,11 @@ public class NavigationServlet extends HttpServlet {
 			output.append("<div>\r\n");
 			
 			while (sqlRes.next()) {
-				output.append("<div>\r\n<span style=\"color:grey;\">\r\n");
-				output.append("FROM:&emsp;" + sqlRes.getString(1) + "&emsp;&emsp;AT:&emsp;" + sqlRes.getString(5) + "\r\n");
-				output.append("</span>\r\n");
+				output.append("<div style=\"white-space: pre-wrap;\"><span style=\"color:grey;\">");
+				output.append("FROM:&emsp;" + sqlRes.getString(1) + "&emsp;&emsp;AT:&emsp;" + sqlRes.getString(5));
+				output.append("</span>");
 				output.append("<br><b>" + sqlRes.getString(3) + "</b>\r\n");
-				output.append("<br><b>" + sqlRes.getString(4) + "</b>\r\n");
+				output.append("<br>" + sqlRes.getString(4));
 				output.append("</div>\r\n");
 				
 				output.append("<hr style=\"border-top: 2px solid black;\">\r\n");
@@ -126,11 +127,11 @@ public class NavigationServlet extends HttpServlet {
 			output.append("<div>\r\n");
 			
 			while (sqlRes.next()) {
-				output.append("<div>\r\n<span style=\"color:grey;\">\r\n");
-				output.append("TO:&emsp;" + sqlRes.getString(2) + "&emsp;&emsp;AT:&emsp;" + sqlRes.getString(5) + "\r\n");
-				output.append("</span>\r\n");
+				output.append("<div style=\"white-space: pre-wrap;\"><span style=\"color:grey;\">");
+				output.append("TO:&emsp;" + sqlRes.getString(2) + "&emsp;&emsp;AT:&emsp;" + sqlRes.getString(5));
+				output.append("</span>");
 				output.append("<br><b>" + sqlRes.getString(3) + "</b>\r\n");
-				output.append("<br><b>" + sqlRes.getString(4) + "</b>\r\n");
+				output.append("<br>" + sqlRes.getString(4));
 				output.append("</div>\r\n");
 				
 				output.append("<hr style=\"border-top: 2px solid black;\">\r\n");

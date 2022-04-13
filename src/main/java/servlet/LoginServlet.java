@@ -55,8 +55,8 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 		
-		String email = request.getParameter("email");
-		String pwd = request.getParameter("password");
+		String email = request.getParameter("email").replace("'", "''");;
+		String pwd = request.getParameter("password").replace("'", "''");;
 		
 		try (Statement st = conn.createStatement()) {
 			ResultSet sqlRes = st.executeQuery(

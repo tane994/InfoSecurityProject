@@ -55,40 +55,38 @@ public class RegisterServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 		
-		String name = request.getParameter("name");
-		String surname = request.getParameter("surname");
-		String email = request.getParameter("email");
-		String pwd = request.getParameter("password");
+		// The replacement escapes apostrophe special character in order to store it in SQL
+		String name = request.getParameter("name").replace("'", "''");
+		String surname = request.getParameter("surname").replace("'", "''");;
+		String email = request.getParameter("email").replace("'", "''");;
+		String pwd = request.getParameter("password").replace("'", "''");;
 		
-		if (name != null && surname != null && email != null && pwd != null) {
-			try (Statement st = conn.createStatement()) {
-				ResultSet sqlRes = st.executeQuery(
-					"SELECT * "
-					+ "FROM [user] "
-					+ "WHERE email='" + email + "' "
+		try (Statement st = conn.createStatement()) {
+			ResultSet sqlRes = st.executeQuery(
+				"SELECT * "
+				+ "FROM [user] "
+				+ "WHERE email='" + email + "'"
+			);
+			
+			if (sqlRes.next()) {
+				System.out.println("Email already registered!");
+				request.getRequestDispatcher("register.html").forward(request, response);
+				
+			} else {
+				st.execute(
+					"INSERT INTO [user] ( name, surname, email, password ) "
+					+ "VALUES ( '" + name + "', '" + surname + "', '" + email + "', '" + pwd + "' )"
 				);
 				
-				if (sqlRes.next()) {
-					System.out.println("Email already registered!");
-					request.getRequestDispatcher("register.html").forward(request, response);
-					
-				} else {
-					st.execute(
-						"INSERT INTO [user] ( name, surname, email, password ) "
-						+ "VALUES ( '" + name + "', '" + surname + "', '" + email + "', '" + pwd + "' )"
-					);
-					
-					System.out.println("Registration succeeded!");
-					request.getRequestDispatcher("home.jsp").forward(request, response);
-				}
+				request.setAttribute("email", email);
+				request.setAttribute("password", pwd);
 				
-			} catch (SQLException e) {
-				e.printStackTrace();
-				request.getRequestDispatcher("register.html").forward(request, response);
+				System.out.println("Registration succeeded!");
+				request.getRequestDispatcher("home.jsp").forward(request, response);
 			}
 			
-		} else {
-			System.out.println("Null values are not allowed!");
+		} catch (SQLException e) {
+			e.printStackTrace();
 			request.getRequestDispatcher("register.html").forward(request, response);
 		}
 	}
