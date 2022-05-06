@@ -1,18 +1,16 @@
-package servlet;
-
-import jakarta.servlet.http.HttpServlet;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Date;
-import java.util.Properties;
+package main.java.servlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;
 
 /**
  * Servlet implementation class SendMailServlet
@@ -20,13 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/SendMailServlet")
 public class SendMailServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-	private static final String USER = "sa";
-	private static final String PWD = "Riva96_shared_db";
-	private static final String DRIVER_CLASS = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-	private static final String DB_URL = "jdbc:sqlserver://localhost:1433;databaseName=examDB;encrypt=true;trustServerCertificate=true;";
-    
-	private static Connection conn;
+	private static Connection conn = DbParams.init();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -34,23 +26,6 @@ public class SendMailServlet extends HttpServlet {
     public SendMailServlet() {
         super();
         // TODO Auto-generated constructor stub
-    }
-    
-    public void init() throws ServletException {
-    	try {
-			Class.forName(DRIVER_CLASS);
-			
-		    Properties connectionProps = new Properties();
-		    connectionProps.put("user", USER);
-		    connectionProps.put("password", PWD);
-	
-	        conn = DriverManager.getConnection(DB_URL, connectionProps);
-		    
-		    //System.out.println("User \"" + USER + "\" connected to database.");
-    	
-    	} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
     }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -64,7 +39,7 @@ public class SendMailServlet extends HttpServlet {
 		
 		try (Statement st = conn.createStatement()) {
 			st.execute(
-				"INSERT INTO mail ( sender, receiver, subject, body, [time] ) "
+				"INSERT INTO mail ( sender, receiver, subject, body, time ) "
 				+ "VALUES ( '" + sender + "', '" + receiver + "', '" + subject + "', '" + body + "', '" + timestamp + "' )"
 			);
 			
