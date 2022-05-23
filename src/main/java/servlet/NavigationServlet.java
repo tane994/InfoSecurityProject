@@ -88,8 +88,10 @@ public class NavigationServlet extends HttpServlet {
 			+ "		<input class=\"single-row-input\" type=\"text\"  name=\"subject\" placeholder=\"Subject\" required>\r\n"
 			+ "		<textarea class=\"textarea-input\" name=\"body\" placeholder=\"Body\" wrap=\"hard\" required></textarea>\r\n"
 			+ "		<input type=\"submit\" name=\"sent\" value=\"Send\">\r\n"
+			+ "		<input type=\"submit\" name=\"refresh\" value=\"Refresh\">\r\n"
 			+ "	</form>";
 	}
+
 	
 	private String getHtmlForSent(String email) {
 		try (Statement st = conn.createStatement()) {

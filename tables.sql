@@ -11,7 +11,7 @@ CREATE TABLE mail (
 	receiver varchar(50) NOT NULL,
 	subject varchar(100) NULL,
 	body text NOT NULL,
-	datetime timestamp NOT NULL,
+	time timestamp NOT NULL,
 	CONSTRAINT mail_FK FOREIGN KEY (sender) REFERENCES users (email),
 	CONSTRAINT mail_FK_1 FOREIGN KEY (receiver) REFERENCES users(email)
 );
