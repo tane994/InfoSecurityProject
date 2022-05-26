@@ -28,6 +28,7 @@
 			<input type="submit" name="newMail" value="New Mail">
 			<input type="submit" name="inbox" value="Inbox">
 			<input type="submit" name="sent" value="Sent">
+			<input type = "submit" name="refresh" value ="Refresh">
 		</form>
 		
 		<%= request.getAttribute("content")!=null ? request.getAttribute("content") : "" %>
