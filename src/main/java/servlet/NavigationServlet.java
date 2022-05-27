@@ -100,13 +100,13 @@ public class NavigationServlet extends HttpServlet {
 	private String getHtmlForNewMail(String email, String pwd) {
 		return
 				"<form id=\"submitForm\" class=\"form-resize\" action=\"SendMailServlet\" method=\"post\">\r\n"
-						+ "		<input type=\"hidden\" name=\"email\" value=\""+email+"\">\r\n"
-						+ "		<input type=\"hidden\" name=\"password\" value=\""+pwd+"\">\r\n"
-						+ "		<input class=\"single-row-input\" type=\"email\" name=\"receiver\" placeholder=\"Receiver\" required>\r\n"
-						+ "		<input class=\"single-row-input\" type=\"text\"  name=\"subject\" placeholder=\"Subject\" required>\r\n"
-						+ "		<textarea class=\"textarea-input\" name=\"body\" placeholder=\"Body\" wrap=\"hard\" required></textarea>\r\n"
-						+ "		<input type=\"submit\" name=\"sent\" value=\"Send\">\r\n"
-						+ "	</form>";
+						+ "  <input type=\"hidden\" name=\"email\" value=\""+email+"\">\r\n"
+						+ "  <input type=\"hidden\" name=\"password\" value=\""+pwd+"\">\r\n"
+						+ "  <input class=\"single-row-input\" type=\"email\" name=\"receiver\" placeholder=\"Receiver\" required>\r\n"
+						+ "  <input class=\"single-row-input\" type=\"text\"  name=\"subject\" placeholder=\"Subject\" required>\r\n"
+						+ "  <textarea class=\"textarea-input\" name=\"body\" placeholder=\"Body\" wrap=\"hard\" required></textarea>\r\n"
+						+ "  <input type=\"submit\" name=\"sent\" value=\"Send\">\r\n"
+						+ " </form>";
 	}
 
 	private String getHtmlForSent(String email) {
