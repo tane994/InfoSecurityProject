@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class DbParams implements Serializable {
     static final String USER = "postgres";
-    static final String PWD = "";
+    static final String PWD = "Project";
     static final String DRIVER_CLASS = "org.postgresql.Driver";
     static final String DB_URL = "jdbc:postgresql://localhost:5432/securityproject";
 

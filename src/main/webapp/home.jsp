@@ -14,7 +14,7 @@
 	  	<div>
 			<img src="images/email_icon.jpg" align="left" />
 			<p>E-MAIL CLIENT
-				<br><% out.println(request.getAttribute("email")); %>
+				<br><% System.out.println(request.getAttribute("email")); %>
 			</p>
 	  	</div>
 	  	<div id="right"><a href="login.html">Logout</a></div>
@@ -28,9 +28,8 @@
 			<input type="submit" name="newMail" value="New Mail">
 			<input type="submit" name="inbox" value="Inbox">
 			<input type="submit" name="sent" value="Sent">
-			<input type = "submit" name="refresh" value ="Refresh">
 		</form>
-		
+
 		<%= request.getAttribute("content")!=null ? request.getAttribute("content") : "" %>
 	</div>
 </body>
