@@ -25,6 +25,7 @@
 		<form class="btn-group" action="NavigationServlet" method="post">
 			<input type="hidden" name="email" value="<%= request.getAttribute("email") %>">
 			<input type="hidden" name="password" value="<%= request.getAttribute("password") %>">
+			<input type = "hidden" name ="search" value = "<%= request.getAttribute("search") %>">
 			<input type="submit" name="newMail" value="New Mail">
 			<input type="submit" name="inbox" value="Inbox">
 			<input type="submit" name="sent" value="Sent">

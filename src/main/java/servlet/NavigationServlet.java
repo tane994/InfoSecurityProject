@@ -35,11 +35,12 @@ public class NavigationServlet extends HttpServlet {
 
 		String email = request.getParameter("email").replace("'", "''");;
 		String pwd = request.getParameter("password").replace("'", "''");;
+		String search = request.getParameter("search").replace("'", "''");;
 
 		if (request.getParameter("newMail") != null)
 			request.setAttribute("content", getHtmlForNewMail(email, pwd));
 		else if (request.getParameter("inbox") != null)
-			request.setAttribute("content", getHtmlForInbox(email));
+			request.setAttribute("content", getHtmlForInbox(email, search));
 		else if (request.getParameter("sent") != null)
 			request.setAttribute("content", getHtmlForSent(email));
 
@@ -47,7 +48,7 @@ public class NavigationServlet extends HttpServlet {
 		request.getRequestDispatcher("home.jsp").forward(request, response);
 	}
 
-	private String getHtmlForInbox(String email) {
+	private String getHtmlForInbox(String email, String search) {
 		try (Statement st = conn.createStatement()) {
 			ResultSet sqlRes = st.executeQuery(
 					"SELECT * FROM mail "
@@ -57,8 +58,6 @@ public class NavigationServlet extends HttpServlet {
 
 			StringBuilder output = new StringBuilder();
 			output.append("<div>\r\n");
-			output.append("<input type=\"text\" placeholder=\"Search..\" name=\"search\">");
-			output.append("<button type=\"submit\"><i class=\"fa fa-search\"></i></button>");
 
 			while (sqlRes.next()) {
 				output.append("<div style=\"white-space: pre-wrap;\"><span style=\"color:grey;\">");
