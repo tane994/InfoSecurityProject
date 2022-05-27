@@ -53,12 +53,21 @@ public class NavigationServlet extends HttpServlet {
 
 
 	private String getHtmlForInbox(String email, String pwd, String search) {
-		try (Statement st = conn.createStatement()) {
-			ResultSet sqlRes = st.executeQuery(
+		try (Statement st = conn.createStatement())
+
+			{ResultSet sqlRes=null;
+				if(search==null){
+					 sqlRes = st.executeQuery(
+							"SELECT * FROM mail "
+									+ "WHERE receiver='" + email
+									+ "' ORDER BY time DESC");
+				}
+				else{
+			 sqlRes = st.executeQuery(
 					"SELECT * FROM mail "
 							+ "WHERE receiver='" + email+ "' and subject LIKE '%" + search
 							+ "%' ORDER BY time DESC"
-			);
+			);}
 			log(search);
 			StringBuilder output = new StringBuilder();
 			output.append("<div>\r\n" + search);
