@@ -1,43 +1,37 @@
 package it.unibz.emails.server.servlet;
 
-import it.unibz.emails.server.persistence.Password;
-import it.unibz.emails.client.Primes;
+import it.unibz.emails.client.ClientRequest;
+import it.unibz.emails.server.persistence.entities.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Map;
 
 @WebServlet("/register")
 public class RegisterServlet extends BaseServlet {
+    private final String emailRegex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		super.doPost(request, response);
-		response.setContentType("text/html");
-		
-		// The replacement escapes apostrophe special character in order to store it in SQL
-		String name = request.getParameter("name").replace("'", "''");
-		String surname = request.getParameter("surname").replace("'", "''");
-		String email = request.getParameter("email").replace("'", "''");
-		String pwd = Password.encrypt(
-				request.getParameter("password").replace("'", "''"));
+    public RegisterServlet() {
+        super("name", "surname", "email", "password");
+    }
 
-		boolean alreadyRegistered = !db.select("SELECT email FROM users WHERE email=?", email).isEmpty();
-		if (alreadyRegistered) {
-			UserError.handle(request, response, "Email already present", "/register.jsp");
+    @Override
+    protected void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!parameters.get("email").matches(emailRegex))
+            throw new UserException("Invalid email inserted", "/register.jsp");
+        boolean alreadyRegistered = User.get(parameters.get("email")) != null;
+        if (alreadyRegistered)
+            throw new UserException("Email already present", "/register.jsp");
 
-		} else {
-			db.insert(
-				"INSERT INTO users (name, surname, email, password, pubkey, privkey) "
-				+ "VALUES (?, ?, ?, ?, ?, ?)",name, surname, email, pwd, Primes.getRandomPrime(), Primes.getRandomPrime());
+        Map<String,String> keys = ClientRequest.to("/generateKeys").with("email", parameters.get("email")).send();
 
-			request.setAttribute("email", email);
-			request.setAttribute("password", pwd);
+        User.set(parameters.get("name"), parameters.get("surname"), parameters.get("email"), parameters.get("password"), Integer.valueOf(keys.get("pubkey")), Integer.valueOf(keys.get("exponent")));
+        System.out.println("Registration succeeded!");
 
-			System.out.println("Registration succeeded!");
-			request.getRequestDispatcher("/home.jsp").forward(request, response);
-		}
-	}
+        request.getSession().setAttribute("email", parameters.get("email"));
+        request.getRequestDispatcher("/home.jsp").forward(request, response);
+    }
 }

@@ -1,35 +1,29 @@
 package it.unibz.emails.server.servlet;
 
 import it.unibz.emails.server.persistence.Password;
+import it.unibz.emails.server.persistence.entities.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 @WebServlet("/login")
 public class LoginServlet extends BaseServlet {
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		super.doPost(request,response);
-		response.setContentType("text/html");
 
-		String email = request.getParameter("email");
-		String pwd = request.getParameter("password");
+    public LoginServlet() {
+        super("email", "password");
+    }
 
-		List<Map<String,Object>> res = db.select("SELECT * FROM users WHERE email=?", email);
-		if (!res.isEmpty() && Password.compare(pwd, (String) res.get(0).get("password"))) {
-			request.setAttribute("email", res.get(0).get("email"));
-			request.setAttribute("password", res.get(0).get("password"));
+    @Override
+    protected void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        User user = User.get(parameters.get("email"));
+        if (user==null || !Password.areSame(parameters.get("password"),user.getPassword()))
+            throw new UserException("Login failed", "/login.jsp");
 
-			System.out.println("Login succeeded!");
-			request.setAttribute("content", "");
-			request.getRequestDispatcher("/home.jsp").forward(request, response);
-		} else {
-			UserError.handle(request,response,"Login failed", "/login.jsp");
-		}
-	}
+        System.out.println("Login succeeded");
+        request.getSession().setAttribute("email", user.getEmail());
+        request.getRequestDispatcher("/home.jsp").forward(request, response);
+    }
 }

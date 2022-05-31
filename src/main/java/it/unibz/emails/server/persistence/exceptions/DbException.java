@@ -50,8 +50,6 @@ public class DbException extends RuntimeException {
         String sqlState = e.getSQLState();
         String details = e.getMessage();
 
-        System.out.println(e.getSQLState() + " " + e.getMessage());
-
         if (sqlState == null)
             throw new DbException("", operation, details, e);
         if (sqlState.startsWith("23"))  //Integrity Constraint Violation

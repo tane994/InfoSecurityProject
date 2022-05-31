@@ -1,94 +1,89 @@
 package it.unibz.emails.server.servlet;
 
+import it.unibz.emails.client.ClientRequest;
+import it.unibz.emails.client.encryption.HashAlgorithm;
+import it.unibz.emails.server.persistence.entities.Mail;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @WebServlet("/navigation")
-public class NavigationServlet extends CSRFServlet {
+public class NavigationServlet extends AuthenticatedServlet {
+    @Override
+    protected void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String content = "";
+        if (request.getParameter("newMail") != null)
+            content = getHtmlForNewMail((String)request.getSession().getAttribute("csrf"));
+        else if (request.getParameter("inbox") != null)
+            content = getHtmlForInbox(getEmail(request));
+        else if (request.getParameter("sent") != null)
+            content = getHtmlForSent(getEmail(request));
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		super.doPost(request, response);
-		response.setContentType("text/html");
-		
-		String email = request.getParameter("email");
-		String pwd = request.getParameter("password");
+        request.setAttribute("content", content);
+        request.getRequestDispatcher("home.jsp").forward(request, response);
+    }
 
-		if (request.getParameter("newMail") != null)
-			request.setAttribute("content", getHtmlForNewMail(email, pwd));
-		else if (request.getParameter("inbox") != null)
-			request.setAttribute("content", getHtmlForInbox(email));
-		else if (request.getParameter("sent") != null)
-			request.setAttribute("content", getHtmlForSent(email));
-		
-		request.setAttribute("email", email);
-		request.getRequestDispatcher("home.jsp").forward(request, response);
-	}
+    private String getHtmlForInbox(String receiver) {
+        return "<div class='section'><h3>Inbox</h3>" +
+                Mail.inboxFor(receiver).stream().map(mail -> {
+                    String decryptedBody = decryptBody(mail.getBody(), receiver);
+                    return getHtmlForMail("From", mail.getSender(), mail.getStringTimestamp(), mail.getSubject(),
+                            decryptedBody, getSignatureStatus(mail,decryptedBody));
+                }).collect(Collectors.joining("")) +
+                "</div>";
+    }
+    private String decryptBody(String ciphertext, String email) {
+        return ClientRequest.to("/privKey")
+                .with("operation", "decrypt")
+                .with("text", ciphertext)
+                .with("email", email)
+                .send().get("result");
+    }
+    private String getSignatureStatus(Mail mail, String decryptedBody) {
+        String out = "not present";
 
-	private String getHtmlForInbox(String email) {
-		List<Map<String,Object>> inbox = db.select(
-				"SELECT * FROM mail "
-				+ "WHERE receiver=?"
-				+ "ORDER BY time DESC", email);
-			
-		StringBuilder output = new StringBuilder();
-		output.append("<div>\r\n");
+        if (mail.getDigitalSignature() != null) {
+            String thisHash = new HashAlgorithm("SHA-256").hash(decryptedBody);
+            if (mail.areSignaturesSame(thisHash)) out = "matches";
+            else out = "doesn't match";
+        }
+        return out;
+    }
 
-		inbox.forEach((mail) -> {
-			output.append("<div style=\"white-space: pre-wrap;\"><span style=\"color:grey;\">");
-			output.append("FROM:&emsp;" + mail.get("sender") + "&emsp;&emsp;AT:&emsp;" + mail.get("time"));
-			output.append("</span>");
-			output.append("<br><b>" + mail.get("subject") + "</b>\r\n");
-			output.append("<br>" + mail.get("body"));
-			output.append("</div>\r\n");
+    private String getHtmlForSent(String sender) {
+        return "<div class='section'><h3>Sent</h3>" +
+                Mail.sentFor(sender).stream().map(mail ->
+                    getHtmlForMail("To", mail.getReceiver(), mail.getStringTimestamp(), mail.getSubject(), mail.getBody(), null)
+                ).collect(Collectors.joining("")) +
+                "</div>";
+    }
 
-			output.append("<hr style=\"border-top: 2px solid black;\">\r\n");
-		});
+    private String getHtmlForMail(String action, String email, String timestamp, String subject, String body, String signatureStatus) {
+        String ret = "<div class='email-message'>" +
+                       "<div class='grid'>" +
+                         "<div>" + action + ":</div><div>" + email + "</div>" +
+                         "<div>Date:</div><div>" + timestamp + "</div>";
+                         if(signatureStatus!=null) ret += "<div>Signature:</div><div>" + signatureStatus + "</div>";
+       return ret +    "<div class='subject'>Subject:</div><div class='subject'>" + subject + "</div>" +
+                       "</div>" +
+                       "<p>" + body + "</p>" +
+                       "</div>";
+    }
 
-		output.append("</div>");
-		return output.toString();
-	}
-	
-	private String getHtmlForNewMail(String email, String pwd) {
-		return
-			"<form id=\"submitForm\" class=\"form-resize\" action=\"send\" method=\"post\">\r\n"
-			+ "		<input type=\"hidden\" name=\"email\" value=\""+email+"\">\r\n"
-			+ "		<input type=\"hidden\" name=\"password\" value=\""+pwd+"\">\r\n"
-			+ "		<input class=\"single-row-input\" type=\"email\" name=\"receiver\" placeholder=\"Receiver\" required>\r\n"
-			+ "		<input class=\"single-row-input\" type=\"text\"  name=\"subject\" placeholder=\"Subject\" required>\r\n"
-			+ "		<textarea class=\"textarea-input\" name=\"body\" placeholder=\"Body\" wrap=\"hard\" required></textarea>\r\n"
-			+ "		<input type=\"hidden\" name=\"csrf\" value=\""+csrfToken+"\">\r\n"
-			+ "		<input type=\"submit\" name=\"sent\" value=\"Send\">\r\n"
-			+ "	</form>";
-	}
-	
-	private String getHtmlForSent(String email) {
-		List<Map<String,Object>> sent = db.select(
-				"SELECT * FROM mail "
-						+ "WHERE sender=?"
-						+ "ORDER BY time DESC", email);
-			
-			StringBuilder output = new StringBuilder();
-			output.append("<div>\r\n");
-
-			sent.forEach((mail) -> {
-				output.append("<div class='emails' style=\"white-space: pre-wrap;\"><span style=\"color:grey;\">");
-				output.append("TO:&emsp;" + mail.get("receiver") + "&emsp;&emsp;AT:&emsp;" + mail.get("time"));
-				output.append("</span>");
-				output.append("<br><b>" + mail.get("subject") + "</b>\r\n");
-				output.append("<br>" + mail.get("body"));
-				output.append("</div>\r\n");
-				
-				output.append("<hr style=\"border-top: 2px solid black;\">\r\n");
-			});
-			
-			output.append("</div>");
-			return output.toString();
-	}
+    private String getHtmlForNewMail(String csrfToken) {
+        return
+            "<form class='flex-col submit-email section' action='send' method='post'>"
+            + "<h3>New Mail</h3>"
+            + "<input class='single-row-input' type='email' name='receiver' placeholder='Receiver' minlength='4' required>"
+            + "<input class='single-row-input' type='text' name='subject' placeholder='Subject' minlength='4' required>"
+            + "<textarea name='body' placeholder='Body' wrap='hard' minlength='4' rows='10' required></textarea>"
+            + "<div><label for='sign'>Digitally sign: </label><input type='checkbox' name='sign' id='sign' value='yes'></div>"
+            + "<input type='hidden' name='csrf' value='"+csrfToken+"'>"
+            + "<input type='submit' name='sent' value='Send'>"
+            + "</form>";
+    }
 }

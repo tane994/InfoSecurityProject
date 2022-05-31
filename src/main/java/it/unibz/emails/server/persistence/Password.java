@@ -11,7 +11,7 @@ public class Password {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    public static boolean compare(String hash1, String hash2) {
+    public static boolean areSame(String hash1, String hash2) {
         return BCrypt.checkpw(hash1, hash2);
     }
 

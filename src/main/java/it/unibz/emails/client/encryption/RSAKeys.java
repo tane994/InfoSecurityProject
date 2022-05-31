@@ -1,8 +1,12 @@
-package it.unibz.emails.client;
+package it.unibz.emails.client.encryption;
 
 public class RSAKeys {
     private final int p;
     private final int q;
+
+    public static RSAKeys withRandomPrimes() {
+        return new RSAKeys(Primes.getRandomPrime(), Primes.getRandomPrime());
+    }
 
     public RSAKeys(int p, int q) {
         this.p = p;

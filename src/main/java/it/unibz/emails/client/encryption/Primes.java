@@ -1,4 +1,4 @@
-package it.unibz.emails.client;
+package it.unibz.emails.client.encryption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +15,10 @@ public class Primes {
     }
 
     private static void populateList() {
-        primes = primeNumbersTill(1000);
+        primes = primeNumbersTill(100);
     }
     private static List<Integer> primeNumbersTill(int n) {
-        return IntStream.rangeClosed(2, n)
+        return IntStream.rangeClosed(10, n)
                 .filter(Primes::isPrime).boxed()
                 .toList();
     }

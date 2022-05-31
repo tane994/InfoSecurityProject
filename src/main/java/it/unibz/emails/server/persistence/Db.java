@@ -82,7 +82,6 @@ public class Db {
 
     public int insert(String query, Object... params) {
         PreparedStatement statement = prepareStatement(query, params);
-        System.out.println(statement);
         int affectedRows = 0;
 
         try {
@@ -156,7 +155,6 @@ public class Db {
                 if (param==null || param=="null")
                     statement.setNull(i, getSqlDataType(param));
                 else {
-                    System.out.println(""+param+ " is of type " + getSqlDataType(param));
                     switch (getSqlDataType(param)) {
                         case Types.VARCHAR, Types.CHAR -> statement.setString(i, param.toString());
                         case Types.INTEGER -> statement.setInt(i, (Integer) param);
@@ -204,8 +202,10 @@ public class Db {
             while (resultSet.next()) {
                 Map<String,Object> tuple = new LinkedHashMap<>(numberOfColumns);
 
-                for (int i=1; i<=numberOfColumns; i++)
-                    tuple.put(colNames.get(i-1), castParamFromResult(resultSet, i, colTypes));
+                for (int i=1; i<=numberOfColumns; i++) {
+                    Object param = castParamFromResult(resultSet, i, colTypes);
+                    tuple.put(colNames.get(i-1), param);
+                }
 
                 ret.add(tuple);
             }
@@ -221,12 +221,11 @@ public class Db {
 
         try {
             switch (colType) {
-                case Types.CHAR, Types.VARCHAR, Types.OTHER -> { return resultSet.getString(pos); }
                 case Types.INTEGER -> { return resultSet.getInt(pos); }
                 case Types.BOOLEAN, Types.BIT -> { return resultSet.getBoolean(pos); }
-                case Types.DATE, Types.TIMESTAMP -> { return resultSet.getDate(pos); }
-                case Types.TIME -> { return resultSet.getTime(pos); }
+                case Types.TIMESTAMP -> { return resultSet.getTimestamp(pos); }
                 case Types.FLOAT, Types.DOUBLE -> { return resultSet.getDouble(pos); }
+                case Types.CHAR, Types.VARCHAR -> { return resultSet.getString(pos); }
                 case Types.NULL -> { return "null"; }
                 default -> throw new SQLException("Unknown data type " + colType +  " in result for column " + pos, "22030");
             }

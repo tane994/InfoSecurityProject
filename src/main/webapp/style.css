@@ -1,86 +1,90 @@
 body {
   font-family: sans-serif;
+  margin: 0;
+}
+main {
+  display: grid;
+  grid-template-columns: 10% 90%;
 }
 
-/* Navigation bar */
-.navbar {
-	color:#fff!important;
-	background-color:#000!important;
-  	overflow: hidden; /* Hide overflow */
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+.grid {
+  display: grid;
+  grid-template-columns: auto auto;
+  width: 40%;
 }
 
-/* Navigation bar links */
-.navbar a {
-  	display: block; /* Change the display to block, for responsive reasons (see below) */
-  	color: white; /* White text color */
+.section {
+  margin: 0 1%;
+}
+.section h3 {
+  border-bottom: 2px solid black;
 }
 
-/* Navigation bar images */
-.navbar img {
-    max-width: 6%;
-    max-height: 6%;
+navbar {
+  color: #fff;
+  background-color: #000;
+  align-items: center;
+  padding: 0px 10px;
+  font-weight: bold;
 }
-
-.box {
-   	display: flex;
-   	align-items:center;
+navbar .flex-grow {
+  flex-grow: 10;
+}
+navbar a {
+  color: white;
+}
+navbar img {
+  max-width: 4%;
+  max-height: 4%;
 }
 
 .btn-group {
-	border-right: 5px solid;
+  border-right: 5px solid;
 }
-
 .btn-group input {
-  background-color: #04AA6D; /* Green background */
-  border: 1px solid green; /* Green border */
-  color: white; /* White text */
-  padding: 10px 24px; /* Some padding */
-  cursor: pointer; /* Pointer/hand icon */
+  background-color: #04AA6D; 
+  border: 1px solid green; 
+  color: white; 
+  padding: 10px 24px; 
+  cursor: pointer; 
   width: 100%;
-  display: block; /* Make the buttons appear below each other */
 }
-
-.single-row-input {
-  border: 1px solid green; /* Green border */
-  padding: 10px 24px; /* Some padding */
-  cursor: pointer; /* Pointer/hand icon */
-  width: 100%;
-  display: block; /* Make the buttons appear below each other */
-}
-
-.textarea-input {
-	resize: none;
-  	border: 1px solid green; /* Green border */
-  	padding: 10px 24px; /* Some padding */
-  	cursor: pointer; /* Pointer/hand icon */
-  	width: 100%;
-  	height: 100%;
-  	display: block; /* Make the buttons appear below each other */
-}
-
 .btn-group button:not(:last-child) {
-  border-bottom: none; /* Prevent double borders */
+  border-bottom: none;
 }
-
-/* Add a background color on hover */
 .btn-group button:hover {
   background-color: #3e8e41;
 }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: 10% 90%;
-  grid-template-rows: 100%;
+.submit-email input, textarea {
+  padding: 10px 24px;
 }
 
-.form-resize {
-	width: 95%;
-	height: 100%;
+.email-message {
+  display: flex;
+  flex-direction: column;
+  white-space: pre-wrap;
+  padding: 10px;
+  border-bottom: 2px solid black;
+}
+.email-message .subject {
+  font-weight: bold;
+}
+.email-message .header {
+  color: grey;
+  text-transform: uppercase;
 }
 
-
-
- 
-
-
-
+.error {
+  font-weight: bold;
+  color: red;
+}

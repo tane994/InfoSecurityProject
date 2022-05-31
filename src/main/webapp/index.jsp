@@ -2,20 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <head>
-      <title>Page Redirection</title>
-   </head>
-   <body>
-      <h1>Page Redirection</h1>
-      <%
-        String path;
-        if (request.getAttribute("email")!=null)
-            path = "home.jsp";
-        else
-            path = "login.jsp";
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <% it.unibz.emails.server.Headers.set(response); %>
+    <title>Page Redirection</title>
+  </head>
+  <body>
+    <h1>Page Redirection</h1>
+    <%
+      String path;
+      if (request.getSession().getAttribute("email")!=null)
+          path = "home.jsp";
+      else
+          path = "login.jsp";
 
-        response.setStatus(response.SC_MOVED_TEMPORARILY);
-        response.setHeader("Location", path);
-      %>
-   </body>
+      response.setStatus(301);
+      response.setHeader("Location", path);
+    %>
+  </body>
 </html>
