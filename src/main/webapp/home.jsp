@@ -14,7 +14,7 @@
 	  	<div>
 			<img src="images/email_icon.jpg" align="left" />
 			<p>E-MAIL CLIENT
-				<br><% System.out.println(request.getAttribute("email")); %>
+				<br><% out.println(request.getAttribute("email")); %>
 			</p>
 	  	</div>
 	  	<div id="right"><a href="login.html">Logout</a></div>

@@ -70,7 +70,7 @@ public class NavigationServlet extends HttpServlet {
 			);}
 			log(search);
 			StringBuilder output = new StringBuilder();
-			output.append("<div>\r\n" + search);
+			output.append("<div>\r\n" + search );
 			output.append("<form class=\"btn-group\" action=\"NavigationServlet\" method=\"post\"> <input type=\"text\" placeholder=\"Search..\" name=\"search\">" +
 					"<input type=\"hidden\" name=\"email\" value=\"" + email + "\"/>" +
 					"<input type=\"hidden\" name=\"password\" value=\""+ pwd +"\"/>");
