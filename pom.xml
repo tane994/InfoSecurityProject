@@ -7,7 +7,13 @@
   <groupId>it.unibz.emails</groupId>
   <artifactId>SecurityProject</artifactId>
   <version>1.0</version>
-  <packaging>war</packaging>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>server</module>
+    <module>client</module>
+    <module>entities</module>
+  </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,55 +21,19 @@
     <maven.compiler.target>16</maven.compiler.target>
   </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
-      <version>5.0.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.3.6</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jsoup</groupId>
-      <artifactId>jsoup</artifactId>
-      <version>1.15.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-crypto</artifactId>
-      <version>5.7.1</version>
-    </dependency>
-  </dependencies>
-
   <build>
-    <plugins>
+    <pluginManagement>
+      <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version>
-      </plugin>
-      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.10.1</version>
       </plugin>
       <plugin>
-        <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat7-maven-plugin</artifactId>
-        <version>2.2</version>
-        <configuration>
-          <url>http://localhost:8080/manager/text</url>
-          <server>TomcatServer</server>
-          <path>/security</path>
-          <additionalClassesDirs>
-            <classesDir>${project.basedir}/src/main/webapp</classesDir>
-          </additionalClassesDirs>
-        </configuration>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
       </plugin>
-    </plugins>
+      </plugins>
+    </pluginManagement>
   </build>
 </project>
