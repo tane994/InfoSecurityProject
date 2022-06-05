@@ -1,0 +1,9 @@
+.idea/
+.settings/
+.vscode/
+target/
+*.classpath
+*.properties
+!conf/database.properties
+*.project
+*.iml

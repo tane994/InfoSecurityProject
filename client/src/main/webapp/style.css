@@ -1,0 +1,100 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+}
+main {
+  display: grid;
+  grid-template-columns: 10% 90%;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+.grid {
+  display: grid;
+  grid-template-columns: auto auto;
+  width: 40%;
+}
+
+.section {
+  margin: 0 1%;
+}
+.section h3 {
+  border-bottom: 2px solid black;
+}
+
+navbar {
+  color: #fff;
+  background-color: #000;
+  align-items: center;
+  padding: 0px 10px;
+  font-weight: bold;
+}
+navbar .flex-grow {
+  flex-grow: 10;
+}
+navbar a {
+  color: white;
+}
+navbar img {
+  max-width: 4%;
+  max-height: 4%;
+}
+
+.btn-group {
+  border-right: 5px solid;
+}
+.btn-group input {
+  background-color: #04AA6D; 
+  border: 1px solid green; 
+  color: white; 
+  padding: 10px 24px; 
+  cursor: pointer; 
+  width: 100%;
+}
+.btn-group button:not(:last-child) {
+  border-bottom: none;
+}
+.btn-group button:hover {
+  background-color: #3e8e41;
+}
+.green-input {
+  background-color: #04AA6D;
+  border: 1px solid green;
+  color: white;
+  padding: 10px 24px;
+  width: 97%;
+}
+.green-input::placeholder {
+  color: white;
+}
+
+.submit-email input, textarea {
+  padding: 10px 24px;
+}
+
+.email-message {
+  display: flex;
+  flex-direction: column;
+  white-space: pre-wrap;
+  padding: 10px;
+  border-bottom: 2px solid black;
+}
+.email-message .subject {
+  font-weight: bold;
+}
+.email-message .header {
+  color: grey;
+  text-transform: uppercase;
+}
+
+.error {
+  font-weight: bold;
+  color: red;
+}
