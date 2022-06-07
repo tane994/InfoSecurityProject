@@ -3,6 +3,7 @@
 ## Requirements
 
 - Java JDK >16
+- Maven
 - Tomcat 10
 - Postgresql
 
